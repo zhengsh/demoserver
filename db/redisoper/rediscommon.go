@@ -27,9 +27,11 @@ func NewRedisPool(redisURL string) *redis.Pool {
 				return nil, fmt.Errorf("redis connection error: %s", err)
 			}
 			//验证redis密码
-			//if _, authErr := c.Do("AUTH", RedisPassword); authErr != nil {
-			//	return nil, fmt.Errorf("redis auth password error: %s", authErr)
-			//}
+			if RedisPassword != "" {
+				if _, authErr := c.Do("AUTH", RedisPassword); authErr != nil {
+					return nil, fmt.Errorf("redis auth password error: %s", authErr)
+				}
+			}
 			return c, err
 		},
 		TestOnBorrow: func(c redis.Conn, t time.Time) error {
